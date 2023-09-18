@@ -1,0 +1,606 @@
+openapi: 3.0.3
+info:
+  title: Projeto Final M5 - Amanda Dolci Figueiredo
+  version: 1.0.0
+  description: "Neste projeto final para o módulo 5 da Kenzie Academy Brasil, foi\n\
+    \    desenvolvida uma API Rest para o gerenciamento de cursos e aulas de uma escola\
+    \ de\n    modalidade EAD. A aplicação foi enbasada e segue o Diagrama de Entidade\
+    \ e\n    Relacionamento disponibilizado. Esse projeto foi desenvolvido com Python\
+    \ e o framework\n    Django, aplicando os conceitos de Generic View e Model Serializer\
+    \ do Django Rest\n    Framework, realizando autenticações e proteções de rota\
+    \ com Json Web Token (JWT),\n    e utilizando o banco de dados PostgreSQL ao invés\
+    \ do SQLite3 padrão. O deploy deste\n    projeto você pode conferir no Render,\
+    \ assim como visualizar a documentação da API no\n    formato Swagger no endpoint\
+    \ \"/api/docs/\".\n    "
+paths:
+  /api/accounts/:
+    post:
+      operationId: api_accounts_create
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Account'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Account'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Account'
+        required: true
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Account'
+          description: ''
+  /api/courses/:
+    get:
+      operationId: api_courses_list
+      tags:
+      - api
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Course'
+          description: ''
+    post:
+      operationId: api_courses_create
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Course'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Course'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Course'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Course'
+          description: ''
+  /api/courses/{course_id}/:
+    get:
+      operationId: api_courses_retrieve
+      parameters:
+      - in: path
+        name: course_id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - api
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Course'
+          description: ''
+    patch:
+      operationId: api_courses_partial_update
+      parameters:
+      - in: path
+        name: course_id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedCourse'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedCourse'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedCourse'
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Course'
+          description: ''
+    delete:
+      operationId: api_courses_destroy
+      parameters:
+      - in: path
+        name: course_id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - api
+      security:
+      - jwtAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/courses/{course_id}/contents/:
+    post:
+      operationId: api_courses_contents_create
+      parameters:
+      - in: path
+        name: course_id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Content'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Content'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Content'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Content'
+          description: ''
+  /api/courses/{course_id}/contents/{content_id}/:
+    get:
+      operationId: api_courses_contents_retrieve
+      parameters:
+      - in: path
+        name: content_id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      - in: path
+        name: course_id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - api
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Content'
+          description: ''
+    patch:
+      operationId: api_courses_contents_partial_update
+      parameters:
+      - in: path
+        name: content_id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      - in: path
+        name: course_id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedContent'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedContent'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedContent'
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Content'
+          description: ''
+    delete:
+      operationId: api_courses_contents_destroy
+      parameters:
+      - in: path
+        name: content_id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      - in: path
+        name: course_id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - api
+      security:
+      - jwtAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/courses/{course_id}/students/:
+    get:
+      operationId: api_courses_students_retrieve
+      parameters:
+      - in: path
+        name: course_id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - api
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CourseStudents'
+          description: ''
+    put:
+      operationId: api_courses_students_update
+      parameters:
+      - in: path
+        name: course_id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CourseStudents'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/CourseStudents'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/CourseStudents'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CourseStudents'
+          description: ''
+  /api/courses/{course_id}/students/{student_id}/:
+    delete:
+      operationId: api_courses_students_destroy
+      parameters:
+      - in: path
+        name: course_id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      - in: path
+        name: student_id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - api
+      security:
+      - jwtAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/login/:
+    post:
+      operationId: api_login_create
+      description: |-
+        Takes a set of user credentials and returns an access and refresh JSON web
+        token pair to prove the authentication of those credentials.
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TokenObtainPair'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/TokenObtainPair'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/TokenObtainPair'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TokenObtainPair'
+          description: ''
+components:
+  schemas:
+    Account:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        username:
+          type: string
+          description: Required. 150 characters or fewer. Letters, digits and @/./+/-/_
+            only.
+          pattern: ^[\w.@+-]+$
+          maxLength: 150
+        password:
+          type: string
+          writeOnly: true
+          maxLength: 128
+        email:
+          type: string
+          format: email
+          maxLength: 100
+        is_superuser:
+          type: boolean
+          title: Superuser status
+          description: Designates that this user has all permissions without explicitly
+            assigning them.
+      required:
+      - email
+      - id
+      - password
+      - username
+    Content:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        name:
+          type: string
+          maxLength: 150
+        content:
+          type: string
+        video_url:
+          type: string
+          nullable: true
+          maxLength: 200
+      required:
+      - content
+      - id
+      - name
+    Course:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        name:
+          type: string
+          maxLength: 100
+        status:
+          $ref: '#/components/schemas/CourseStatusEnum'
+        start_date:
+          type: string
+          format: date
+        end_date:
+          type: string
+          format: date
+        instructor:
+          type: string
+          format: uuid
+          nullable: true
+        students_courses:
+          type: array
+          items:
+            $ref: '#/components/schemas/StudentCourse'
+          readOnly: true
+        contents:
+          type: array
+          items:
+            $ref: '#/components/schemas/Content'
+          readOnly: true
+      required:
+      - contents
+      - end_date
+      - id
+      - name
+      - start_date
+      - students_courses
+    CourseStatusEnum:
+      enum:
+      - not started
+      - in progress
+      - finished
+      type: string
+      description: |-
+        * `not started` - not started
+        * `in progress` - in progress
+        * `finished` - finished
+    CourseStudents:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        name:
+          type: string
+          readOnly: true
+        students_courses:
+          type: array
+          items:
+            $ref: '#/components/schemas/StudentCourse'
+      required:
+      - id
+      - name
+      - students_courses
+    PatchedContent:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        name:
+          type: string
+          maxLength: 150
+        content:
+          type: string
+        video_url:
+          type: string
+          nullable: true
+          maxLength: 200
+    PatchedCourse:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        name:
+          type: string
+          maxLength: 100
+        status:
+          $ref: '#/components/schemas/CourseStatusEnum'
+        start_date:
+          type: string
+          format: date
+        end_date:
+          type: string
+          format: date
+        instructor:
+          type: string
+          format: uuid
+          nullable: true
+        students_courses:
+          type: array
+          items:
+            $ref: '#/components/schemas/StudentCourse'
+          readOnly: true
+        contents:
+          type: array
+          items:
+            $ref: '#/components/schemas/Content'
+          readOnly: true
+    StudentCourse:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        student_id:
+          type: string
+          format: uuid
+          readOnly: true
+        student_username:
+          type: string
+          readOnly: true
+        student_email:
+          type: string
+          format: email
+        status:
+          $ref: '#/components/schemas/StudentCourseStatusEnum'
+      required:
+      - id
+      - student_email
+      - student_id
+      - student_username
+    StudentCourseStatusEnum:
+      enum:
+      - pending
+      - accepted
+      type: string
+      description: |-
+        * `pending` - Pending
+        * `accepted` - Accepted
+    TokenObtainPair:
+      type: object
+      properties:
+        username:
+          type: string
+          writeOnly: true
+        password:
+          type: string
+          writeOnly: true
+        access:
+          type: string
+          readOnly: true
+        refresh:
+          type: string
+          readOnly: true
+      required:
+      - access
+      - password
+      - refresh
+      - username
+  securitySchemes:
+    basicAuth:
+      type: http
+      scheme: basic
+    cookieAuth:
+      type: apiKey
+      in: cookie
+      name: sessionid
+    jwtAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
